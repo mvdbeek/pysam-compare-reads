@@ -67,7 +67,7 @@ if 'TOXENV' in os.environ and 'SETUPPY_CFLAGS' in os.environ:
 
 setup(
     name='compare-reads',
-    version='0.0.0',
+    version='0.0.1',
     license='MIT license',
     description='cythonized function to compare reads by name',
     long_description='%s\n%s' % (

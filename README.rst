@@ -31,9 +31,9 @@ Overview
     :alt: PyPI Package latest release
     :target: https://pypi.org/project/compare-reads
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/mvdbeek/pysam-compare-reads/v0.0.0.svg
+.. |commits-since| image:: https://img.shields.io/github/commits-since/mvdbeek/pysam-compare-reads/v0.0.1.svg
     :alt: Commits since latest release
-    :target: https://github.com/mvdbeek/pysam-compare-reads/compare/v0.0.0...master
+    :target: https://github.com/mvdbeek/pysam-compare-reads/compare/v0.0.1...master
 
 .. |wheel| image:: https://img.shields.io/pypi/wheel/compare-reads.svg
     :alt: PyPI Wheel
