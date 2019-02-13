@@ -25,6 +25,17 @@ matrix:
       dist: xenial
       env:
         - TOXENV=py37
+    - sudo: required
+      services:
+        - docker
+      env:
+        - PIP=pip
+        - WHEEL=1
+    - os: osx
+      language: generic
+      env:
+        - PIP=pip2
+        - WHEEL=1
 before_install:
   - python --version
   - uname -a
@@ -37,6 +48,11 @@ install:
   - tox --version
 script:
   - tox -v
+  - |
+    if [ "$WHEEL" == "1" ]; then
+        $PIP install cibuildwheel==0.10.1
+        cibuildwheel --output-dir wheelhouse
+    fi
 after_failure:
   - more .tox/log/* | cat
   - more .tox/*/log/* | cat
