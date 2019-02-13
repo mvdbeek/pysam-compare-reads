@@ -2,61 +2,71 @@ language: python
 cache: pip
 env:
   global:
-    - LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
-    - SEGFAULT_SIGNALS=all
+  - LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
+  - SEGFAULT_SIGNALS=all
+  - TWINE_USERNAME=mvdbeek
   matrix:
-    - TOXENV=check
-    - TOXENV=docs
+  - TOXENV=check
+  - TOXENV=docs
+  - secure: Jfq7raapb0A3aDZpkJ6rEOW0d3zySSjZqS1kMNqtLWOG7NTQf0fv83XXDrWaNNerqNrqmPoMF4VAJvsdRtc3wGo8LghNLXGX79ziXk9zR9RM4nOMiINdxtXXYZk1VUyx9lxA7XiK81oaasumcLfw74cQBt0xIgsuWKZUVdZASqGFeLH8FgQpXbuZoCNW6NWcCZJwvHXRhE0TN0QYTVNfoqIgz3kE53yOQGmJ/Kth8N6wSlAYkDC21OO1VoXOlRovp/XvXw6vMUdQ1hvSOTx2dCPwNmClSr2xp9zh5JJkvoDnP2secosm/+dJ/4tn5eMOXCgiZ98ae67nF7u4tlkXml6RUvE1NzggjayGSS6Y2I0empFCceTIp06Jci3JYevmxEf3n9eII/+MeY3fCBgioXbfoNzy5S+6xQTVZFzhg9qj3cxZ01yGTRiW+ArPULb/IqOguYjhdwKWDC2xw/1nSRYGoHGidYxfT9NJbwiAVignoWQzMO7AyGf4cbMpHKVa/8PJfmgyEpRFjZB3bqN/ZRc7YV2T2wnc8OlZ5h1NZrQFcD28B9XCabxGWfYe3TpkUI/c8suywTqRgoe15yRBIBv6y45vgHO/VQ2hl1Rh+PkJNt0eV9CkRGu9w6qUNhHdXwbJMpnRIoXWt6xK+4p9ERnfFBGSWIKS6iUqlaxG/SI=
 matrix:
   include:
-    - python: '2.7'
-      env:
-        - TOXENV=py27
-    - python: '3.4'
-      env:
-        - TOXENV=py34
-    - python: '3.5'
-      env:
-        - TOXENV=py35
-    - python: '3.6'
-      env:
-        - TOXENV=py36
-    - python: '3.7'
-      dist: xenial
-      env:
-        - TOXENV=py37
-    - sudo: required
-      services:
-        - docker
-      env:
-        - PIP=pip
-        - WHEEL=1
-        - CIBW_BEFORE_BUILD="yum install -y zlib-devel bzip2-devel xz-devel"
-    - os: osx
-      language: generic
-      env:
-        - PIP=pip2
-        - WHEEL=1
+  - python: '2.7'
+    env:
+    - TOXENV=py27
+  - python: '3.4'
+    env:
+    - TOXENV=py34
+  - python: '3.5'
+    env:
+    - TOXENV=py35
+  - python: '3.6'
+    env:
+    - TOXENV=py36
+  - python: '3.7'
+    dist: xenial
+    env:
+    - TOXENV=py37
+  - sudo: required
+    services:
+    - docker
+    env:
+    - PIP=pip
+    - WHEEL=1
+    - CIBW_BEFORE_BUILD="yum install -y zlib-devel bzip2-devel xz-devel"
+    - CIBW_SKIP="cp34-* *-manylinux1_i686"
+  - os: osx
+    language: generic
+    env:
+    - PIP=pip2
+    - WHEEL=1
+    - CIBW_SKIP="cp34-* cp35-*"
 before_install:
-  - python --version
-  - uname -a
+- python --version
+- uname -a
 install:
-  - pip install tox
-  - virtualenv --version
-  - easy_install --version
-  - pip --version
-  - tox --version
+- pip install tox
+- virtualenv --version
+- easy_install --version
+- pip --version
+- tox --version
 script:
-  - |
-    if [ "$WHEEL" == "1" ]; then
-        $PIP install cibuildwheel==0.10.1
-        cibuildwheel --output-dir wheelhouse
-    else
-        tox -v
-    fi
+- |
+  if [ "$WHEEL" == "1" ]; then
+      $PIP install cibuildwheel==0.10.1
+      cibuildwheel --output-dir wheelhouse
+  else
+      tox -v
+  fi
+deploy:
+  provider: script
+  script: bash ci/pypi_upload.sh
+  on:
+    tags: true
+  skip_cleanup: true
 after_failure:
-  - more .tox/log/* | cat
-  - more .tox/*/log/* | cat
+- more .tox/log/* | cat
+- more .tox/*/log/* | cat
 notifications:
   email:
     on_success: never
