@@ -47,11 +47,12 @@ install:
   - pip --version
   - tox --version
 script:
-  - tox -v
   - |
     if [ "$WHEEL" == "1" ]; then
         $PIP install cibuildwheel==0.10.1
         cibuildwheel --output-dir wheelhouse
+    else
+        tox -v
     fi
 after_failure:
   - more .tox/log/* | cat
