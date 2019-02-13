@@ -27,8 +27,10 @@ from setuptools import (
 try:
     # Allow installing package without any Cython available. This
     # assumes you are going to include the .c files in your sdist.
+    import Cython
     from Cython.Distutils import build_ext
 except ImportError:
+    Cython = None
     from setuptools.command.build_ext import build_ext
 
 
@@ -126,6 +128,6 @@ setup(
             include_dirs=[dirname(path)],
         )
         for root, _, _ in os.walk('src')
-        for path in glob(join(root, '*.pyx'))
+        for path in glob(join(root, '*.pyx' if Cython else '*.c'))
     ],
 )
